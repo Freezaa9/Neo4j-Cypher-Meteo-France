@@ -1,0 +1,29 @@
+<ul class="graph-diagram-markup" data-internal-scale="0.56" data-external-scale="1">
+  <li class="node" data-node-id="5" data-x="-1978.9505097641404" data-y="-155.96626015057313">
+    <span class="caption">Annee</span>
+  </li>
+  <li class="node" data-node-id="7" data-x="-124.43009118541033" data-y="-50.18996960486332">
+    <span class="caption">Ville</span>
+  </li>
+  <li class="node" data-node-id="8" data-x="-2002.5218505859368" data-y="524.9135262625557">
+    <span class="caption">Mois</span>
+  </li>
+  <li class="node" data-node-id="9" data-x="-1011.3789934430808" data-y="140.38654218401223">
+    <span class="caption">Releve</span>
+  </li>
+  <li class="node" data-node-id="10" data-x="-1051.8855372837613" data-y="812.6125444684709">
+    <span class="caption">Saison</span>
+  </li>
+  <li class="relationship" data-from="9" data-to="7">
+    <span class="type">depuis</span>
+  </li>
+  <li class="relationship" data-from="9" data-to="5">
+    <span class="type">de_l'annee</span>
+  </li>
+  <li class="relationship" data-from="9" data-to="8">
+    <span class="type">du_mois</span>
+  </li>
+  <li class="relationship" data-from="8" data-to="10">
+    <span class="type">de_saison</span>
+  </li>
+</ul>
