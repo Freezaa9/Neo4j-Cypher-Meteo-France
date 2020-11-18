@@ -10,11 +10,11 @@ CREATE CONSTRAINT ON (j:Jour) ASSERT j.numero IS UNIQUE
 
 LOAD CSV WITH HEADERS FROM 'file:///202011.csv' AS line FIELDTERMINATOR ';'
 MERGE  (v:Ville { numer_sta: toString(line.numer_sta)})
-CREATE  (r:Releve { t: toInteger(line.t), h: toInteger(line.h)})
-MERGE  (m:Mois { numero: substring(line.date, 4, 5)})
-MERGE  (a:Annee { numero: left(line.date,3)})
-MERGE  (j:Jour { numero: substring(line.date, 6, 7)})
-MERGE  (h:Heure { numero: substring(line.date, 8, 9)})
+CREATE  (r:Releve { t: toInteger(line.t), u: toInteger(line.u)})
+MERGE  (m:Mois { numero: substring(toString(line.date), 4, 2)})
+MERGE  (a:Annee { numero: substring(toString(line.date), 0, 4)})
+MERGE  (j:Jour { numero: substring(toString(line.date), 6, 2)})
+MERGE  (h:Heure { numero: substring(toString(line.date), 8, 2)})
 CREATE (r)-[t:depuis]->(v)
 CREATE (r)-[w:de_lannee]->(a)
 CREATE (r)-[x:du_mois]->(m)
@@ -24,13 +24,13 @@ CREATE (r)-[z:a_lheure]->(h)
 
 
 LOAD CSV WITH HEADERS FROM 'file:///postesSynop.csv' AS line FIELDTERMINATOR ';'
-MERGE (v:Ville {NUM_POSTE: line.ID})
-ON MATCH SET v.Nom= line.Nom
+MERGE (v:Ville {numer_sta: line.ID})
+SET v.Nom = line.Nom
+SET v.Latitude = toInteger(line.Latitude)
+SET v.Longitude = toInteger(line.Longitude)
+SET v.Altitude = toInteger(line.Altitude)
 
 
-MERGE (v:Ville {Nom: line.Nom, Latitude: toInteger(line.Latitude), Longitude: toInteger(line.Longitude), Altitude: toInteger(line.Altitude)})
-ON CREATE SET v.NUM_POSTE = toString(line.ID) 
-ON MATCH SET v.NUM_POSTE = toString(line.ID) 
 
 
 MATCH (n)
