@@ -10,7 +10,7 @@ CREATE CONSTRAINT ON (j:Jour) ASSERT j.numero IS UNIQUE
 
 LOAD CSV WITH HEADERS FROM 'file:///202011.csv' AS line FIELDTERMINATOR ';'
 MERGE  (v:Ville { numer_sta: toString(line.numer_sta)})
-CREATE  (r:Releve { t: toInteger(line.t), u: toInteger(line.u)})
+MERGE  (r:Releve { t: toInteger(line.t), u: toInteger(line.u)})
 MERGE  (m:Mois { numero: substring(toString(line.date), 4, 2)})
 MERGE  (a:Annee { numero: substring(toString(line.date), 0, 4)})
 MERGE  (j:Jour { numero: substring(toString(line.date), 6, 2)})
