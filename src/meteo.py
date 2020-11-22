@@ -1,6 +1,6 @@
 import requests
 import pandas as pd
-import re
+import glob
 
 
 def download_all_data(start_year, end_year):
@@ -18,6 +18,13 @@ def download_all_data(start_year, end_year):
                 print(r.content)
 
 
+def merge_csv(directory):
+    """Merging all CSV files in directory"""
+    interesting_files = glob.glob(directory+"*.csv")
+    df = pd.concat((pd.read_csv(f, header=0) for f in interesting_files))
+    df.to_csv("../data/merged_data.csv", index=False)
+
+
 def load_from_csv(path):
     """Create a dataframe from csv file, and dropping last column (there is an unwanted ; at the end of each line)"""
     df = pd.read_csv(path, sep=";")
@@ -26,8 +33,9 @@ def load_from_csv(path):
 
 
 if __name__ == "__main__":
-    #download_all_data(1990, 1996)
-    folder = "../data/synop/"
+    #download_all_data(1990, 2020)
+    #folder = "../data/synop/"
     df = load_from_csv(folder+"202006.csv")
     print(df.head())
-    print(df["numer_sta"].unique().tolist())
+    #print(df["numer_sta"].unique().tolist())
+    #merge_csv("../data/synop/")
