@@ -1,13 +1,4 @@
 
-
-
-CREATE CONSTRAINT ON (s:Station) ASSERT s.numer_sta IS UNIQUE;
-CREATE CONSTRAINT ON (m:Mois) ASSERT m.numero IS UNIQUE;
-CREATE CONSTRAINT ON (a:Annee) ASSERT a.numero IS UNIQUE;
-CREATE CONSTRAINT ON (j:Jour) ASSERT j.numero IS UNIQUE;
-CREATE CONSTRAINT ON (h:Heure) ASSERT h.numero IS UNIQUE;
-
-
 LOAD CSV WITH HEADERS FROM 'file:///202011.csv' AS line FIELDTERMINATOR ';'
 MERGE  (v:Ville { numer_sta: toString(line.numer_sta)})
 CREATE  (r:Releve { t: toInteger(line.t), u: toInteger(line.u)})
@@ -35,10 +26,18 @@ SET v.Altitude = toString(line.Altitude)
 MATCH (n)
 DETACH DELETE n
 
+-------------
+INSERTION V2
+-------------
 
-Insertion v2
+CREATE CONSTRAINT ON (s:Station) ASSERT s.numer_sta IS UNIQUE;
+CREATE CONSTRAINT ON (m:Mois) ASSERT m.numero IS UNIQUE;
+CREATE CONSTRAINT ON (a:Annee) ASSERT a.numero IS UNIQUE;
+CREATE CONSTRAINT ON (j:Jour) ASSERT j.numero IS UNIQUE;
+CREATE CONSTRAINT ON (h:Heure) ASSERT h.numero IS UNIQUE;
 
-:auto USING PERIODIC COMMIT 2000
+
+:auto USING PERIODIC COMMIT 5000
 LOAD CSV WITH HEADERS FROM 'file:///merged_data.csv' 
 AS ligne FIELDTERMINATOR ';'
 
@@ -69,24 +68,24 @@ CREATE (r)-[:A_ETE_RELEVE_AU_MOIS]->(m)
 CREATE (r)-[:A_ETE_RELEVE_AU_JOUR]->(j)
 CREATE (r)-[:A_ETE_RELEVE_A_HEURE]->(h)
 CREATE (r)-[:A_ETE_RELEVE_A_STATION]->(s)
-)
+);
 
 
 LOAD CSV WITH HEADERS FROM 'file:///postesSynop.csv' AS line FIELDTERMINATOR ';'
 MERGE (s:Station {numer_sta: line.ID})
-SET s.ville = line.Nom
+SET s.nom = line.Nom
 SET s.latitude = toFloat(line.Latitude)
 SET s.longitude = toFloat(line.Longitude)
-SET s.altitude = toInteger(line.Altitude)
+SET s.altitude = toInteger(line.Altitude);
 
-MATCH (n:Station) SET n.habitants = 0
+MATCH (n:Station) SET n.habitants = 0;
 
-MATCH (n:Station) SET n.codesInsee = []
+MATCH (n:Station) SET n.codesInsee = [];
 
 LOAD CSV WITH HEADERS FROM 'file:///communes2020.csv' AS line FIELDTERMINATOR ','
 MATCH (s:Station)
 WHERE line.ncc IN split(s.nom, '-')  
-SET s.codesInsee = s.codesInsee + line.com
+SET s.codesInsee = s.codesInsee + line.com;
 
 Corrections (import des codes insee plutôt inneficace, mais à défaut d avoir mieux) :
 
@@ -133,6 +132,38 @@ Get toutes les stations qui ne sont pas en France Métropolitaine :
 MATCH (s:Station) 
 WHERE s.latitude <= 41 OR s.latitude >= 52
 OR s.longitude <= -5 OR s.longitude >= 10
+RETURN s
+
+
+Stations qui se trouvent dans la moitié Nord de la France : 
+
+MATCH (s:Station) 
+WHERE s.latitude >= 47 AND s.latitude <= 52
+AND s.longitude >= -5 AND s.longitude <= 10
+RETURN s
+
+
+Stations qui se trouvent dans la moitié Sud de la France : 
+
+MATCH (s:Station) 
+WHERE s.latitude >= 41 AND s.latitude <= 52
+AND s.longitude >= -5 AND s.longitude <= 10
+RETURN s
+
+
+Stations qui se trouvent dans la moitié Est de la France : 
+
+MATCH (s:Station) 
+WHERE s.latitude >= 41 AND s.latitude <= 52
+AND s.longitude >= 2.337 AND s.longitude <= 10
+RETURN s
+
+
+Stations qui se trouvent dans la moitié Ouest de la France : 
+
+MATCH (s:Station) 
+WHERE s.latitude >= 41 AND s.latitude <= 52
+AND s.longitude >= -5 AND s.longitude <= 2.337
 RETURN s
 
 
