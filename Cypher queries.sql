@@ -47,7 +47,8 @@ right(left(ligne.date, 8), 2) AS jour,
 right(left(ligne.date, 6), 2) AS mois,
 ligne.numer_sta AS numer_sta,
 toFloat(ligne.u) AS humidite,
-toFloat(ligne.t) AS temperature
+toFloat(ligne.t) AS temperature,
+toFloat(ligne.nbas) AS nebulosite
 
 FOREACH(ignoreMe IN CASE WHEN humidite IS NOT NULL
 AND temperature IS NOT NULL
@@ -61,7 +62,7 @@ MERGE (h:Heure {numero: toInteger(heure)})
 MERGE (s:Station {numer_sta: numer_sta})
 
 CREATE (r:Releve {temperature: temperature, 
-humidite: humidite})
+humidite: humidite, nebulosite: nebulosite})
 
 CREATE (r)-[:A_ETE_RELEVE_A_ANNEE]->(a)
 CREATE (r)-[:A_ETE_RELEVE_AU_MOIS]->(m)
@@ -117,6 +118,13 @@ MATCH (s:Station {nom: "CAP CEPET"}) SET s.codesInsee = ["83153"];
 
 MATCH (s:Station {nom: "PLOUMANAC'H"}) SET s.codesInsee = ["22168"];
 
+
+Ajout du nombre d habitants :
+
+LOAD CSV WITH HEADERS FROM 'file:///population2017.csv' AS line FIELDTERMINATOR ','
+MATCH (s:Station)
+WHERE line.com IN s.codesInsee
+SET s.habitants = s.habitants + toInteger(line.population);
 
 
 Get toutes les stations qui sont en France Métropolitaine : 
