@@ -33,9 +33,9 @@ def load_from_csv(path):
 
 
 if __name__ == "__main__":
-    #download_all_data(1990, 2020)
-    #folder = "../data/synop/"
+    download_all_data(1990, 2020)
+    folder = "../data/synop/"
     df = load_from_csv(folder+"202006.csv")
     print(df.head())
-    #print(df["numer_sta"].unique().tolist())
-    #merge_csv("../data/synop/")
+    print(df["numer_sta"].unique().tolist())
+    merge_csv("../data/synop/")
