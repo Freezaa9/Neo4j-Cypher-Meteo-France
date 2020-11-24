@@ -13,7 +13,12 @@ def download_all_data(start_year, end_year):
             url = "https://donneespubliques.meteofrance.fr/donnees_libres/Txt/Synop/Archive/synop."+date+".csv.gz"
             r = requests.get(url, allow_redirects=True)
             if "DOCTYPE HTML" not in str(r.content):
-                open("../data/synop/"+date+".csv", 'wb').write(r.content)
+                try:
+                    with open("../data/synop/"+date+".csv", 'wb') as f :
+                        f.write(r.content)
+                except Exception:
+                    print('not found')
+                #continue if file not found
                 print(date)
                 print(r.content)
 
